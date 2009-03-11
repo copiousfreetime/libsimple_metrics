@@ -1,0 +1,5 @@
+*~
+*.o
+*.bundle
+*.dylib
+demo
