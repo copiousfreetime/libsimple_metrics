@@ -22,7 +22,7 @@ int main( int argc, char ** argv )
         simple_metrics_update( sm, d );
     }
 ;
-    printf( "Count  : %d\n"   ,  simple_metrics_count( sm ) );
+    printf( "Count  : %ld\n"   ,  simple_metrics_count( sm ) );
     printf( "Min    : %0.5lf\n", simple_metrics_min( sm ) );
     printf( "Max    : %0.5lf\n", simple_metrics_max( sm ) );
     printf( "Sum    : %0.5lf\n", simple_metrics_sum( sm ) );
