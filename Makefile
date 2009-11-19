@@ -1,19 +1,31 @@
-SRCS  = simple_metrics.c
-OBJS  = simple_metrics.o
-DOTSO = dylib
-SOLIB = libsimple_metrics.$(DOTSO)
-CC    = gcc
-SHLD  = gcc -dynamiclib -single_module -undefined dynamic_lookup -install_name $@
+PREFIX = /usr/local
+DOTSO  = dylib
+SOLIB  = libsimple_metrics.$(DOTSO)
 
-all: $(SOLIB)
+CC      = gcc
+LDFLAGS = -lsimple_metrics -L.
+CPPFLAGS= -I.
+
+#SHLD  = gcc -dynamiclib -single_module -undefined dynamic_lookup -install_name 
+
+default: demo $(SOLIB)
+
+%.o : %.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
 clean: 
-	rm $(OBJS) $(SOLIB)
+	rm -fv *.o *.$(DOTSO)
+	rm -fv demo
+	rm -f *~
 
-.c.o:
-	$(CC) $(INCFLAGS) $(CPPFLAGS) $(CFLAGS) -c $<
+$(SOLIB): simple_metrics.o
+	$(CC) -dynamiclib -single_module -undefined dynamic_lookup -install_name $@ -o $@ $^
 
-$(SOLIB): $(OBJS)
-	$(SHLD) -o $(SOLIB) $(OBJS) 
+demo: $(SOLIB) test_sm.o
+	$(CC) $(CPPFLAGS) $(LDFLAGS) -o $@ $^
 
-demo: $(OBJS) test_sm.o
-	$(CC) -o $@ $(OBJS) test_sm.o 
+install: $(SOLIB) simple_metrics.h
+	install -d -v -m 0755 $(PREFIX)/lib
+	install -d -v -m 0755 $(PREFIX)/include
+	install -v -m 0644 simple_metrics.h $(PREFIX)/include
+	install -v -m 0644 $(SOLIB) $(PREFIX)/lib
